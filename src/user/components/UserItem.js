@@ -10,7 +10,7 @@ const UserItem = (props) => {
   return (
     <li className="user-item">
       <Card className= "user-item__content">
-        <Link to={`/${props.id}/places`}> 
+        <Link to={`/places/${props.id}`}> 
           <div className="user-item__image">
             <Avatar image={props.image} alt={props.name} />
           </div>

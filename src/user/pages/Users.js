@@ -12,7 +12,7 @@ const Users = () => {
       places: 3,
     },
     {
-      id: "u1",
+      id: "u2",
       name: "Can Turkmen",
       image:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Eiffel_Tower_from_the_Tour_Montparnasse_3%2C_Paris_May_2014.jpg/800px-Eiffel_Tower_from_the_Tour_Montparnasse_3%2C_Paris_May_2014.jpg",
