@@ -1,6 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NewPlace from "./places/pages/NewPlace";
+import UpdatePlace from "./places/pages/UpdatePlace";
 import UserPlaces from "./places/pages/UserPlaces";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
 
@@ -11,12 +12,16 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainNavigation />,
     children: [
-      { index: true, element: <Users /> },
+      {
+        path: ":userId",
+        element: <Users />,
+        children: [{ path: "places", element: <UserPlaces /> }],
+      },
       {
         path: "places",
         children: [
-          { path: ":userId", element: <UserPlaces /> },
           { path: "new", element: <NewPlace /> },
+          { path: ":placeId", element: <UpdatePlace /> },
         ],
       },
     ],
