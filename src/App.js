@@ -12,9 +12,9 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainNavigation />,
     children: [
+      {index: true, element: <Users />},
       {
         path: ":userId",
-        element: <Users />,
         children: [{ path: "places", element: <UserPlaces /> }],
       },
       {
