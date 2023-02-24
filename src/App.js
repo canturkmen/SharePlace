@@ -4,6 +4,7 @@ import NewPlace from "./places/pages/NewPlace";
 import UpdatePlace from "./places/pages/UpdatePlace";
 import UserPlaces from "./places/pages/UserPlaces";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
+import AuthPage from "./user/pages/Auth";
 
 import Users from "./user/pages/Users";
 
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
           { path: ":placeId", element: <UpdatePlace /> },
         ],
       },
+      {
+        path: "auth",
+        element: <AuthPage />
+      }
     ],
   },
 ]);

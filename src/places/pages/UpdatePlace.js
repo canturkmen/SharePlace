@@ -3,6 +3,7 @@ import "./PlaceForm.css";
 import { useParams } from "react-router-dom";
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
+import Card from "../../shared/components/UIComponents/Card";
 import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
@@ -25,7 +26,7 @@ const DUMMY_PLACES = [
   },
   {
     id: "p2",
-    title: "Empire State Building",
+    title: "Emp. State Building",
     description: "One of the most famous skyscrapers in the world",
     imageUrl:
       "https://www.history.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTU3ODc3NjU2NzUxNTgwODk1/this-day-in-history-05011931---empire-state-building-dedicated.jpg",
@@ -56,19 +57,21 @@ const UpdatePlace = () => {
   const identifiedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
 
   useEffect(() => {
-    setFormData(
-      {
-        title: {
-          value: identifiedPlace.title,
-          isValid: true,
+    if(identifiedPlace) {
+      setFormData(
+        {
+          title: {
+            value: identifiedPlace.title,
+            isValid: true,
+          },
+          description: {
+            value: identifiedPlace.description,
+            isValid: true,
+          },
         },
-        description: {
-          value: identifiedPlace.description,
-          isValid: true,
-        },
-      },
-      true
-    );
+        true
+      );
+    }
 
     setIsLoading(false);
   }, [setFormData, identifiedPlace]);
@@ -76,7 +79,9 @@ const UpdatePlace = () => {
   if (!identifiedPlace) {
     return (
       <div className="center">
-        <h2>Could not find the place!</h2>
+        <Card>
+          <h2>Could not find the place!</h2>
+        </Card>
       </div>
     );
   }
