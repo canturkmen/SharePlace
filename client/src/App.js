@@ -39,7 +39,7 @@ const loggedRouter = createBrowserRouter([
       },
       {
         path: "places",
-        children: [{path: ":pid", element: <UpdatePlace/>}, {path: "new", element: <NewPlace />}]
+        children: [{path: ":placeId", element: <UpdatePlace/>}, {path: "new", element: <NewPlace />}]
       }
     ]
   }
