@@ -1,10 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const placesRoutes = require("./routes/places");
+const HttpError = require("./models/http-error");
 
 const app = express();
 
-const HttpError = require("./models/http-error");
+app.use(bodyParser.json());
 
 app.use("/api/places", placesRoutes);
 
