@@ -5,18 +5,15 @@ const User = require("../models/user");
 const getUsers = async (req, res, next) => {
   let users;
   try {
-    users = await User.find({}, "email name");
+    users = await User.find({}, "-password");
   } catch (err) {
     const error = new HttpError(
-      "Failed fetching the users, please try again later",
+      "Fetching users failed, please try again later.",
       500
     );
     return next(error);
   }
-
-  res
-    .status(200)
-    .json({ users: users.map((user) => user.toObject({ getters: true })) });
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
 
 const signup = async (req, res, next) => {

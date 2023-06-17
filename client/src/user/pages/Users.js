@@ -1,26 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import UsersList from "../components/UsersList";
+import ErrorModal from "../../shared/components/UIComponents/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIComponents/LoadingSpinner";
 
 const Users = () => {
-  const USERS = [
-    {
-      id: "u1",
-      name: "Can Turkmen",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Eiffel_Tower_from_the_Tour_Montparnasse_3%2C_Paris_May_2014.jpg/800px-Eiffel_Tower_from_the_Tour_Montparnasse_3%2C_Paris_May_2014.jpg",
-      places: 3,
-    },
-    {
-      id: "u2",
-      name: "Can Turkmen",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Eiffel_Tower_from_the_Tour_Montparnasse_3%2C_Paris_May_2014.jpg/800px-Eiffel_Tower_from_the_Tour_Montparnasse_3%2C_Paris_May_2014.jpg",
-      places: 3,
-    },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [loadedUsers, setLoadedUsers] = useState();
 
-  return <UsersList items={USERS} />;
+  useEffect(() => {
+    const getUsers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://localhost:5000/api/users");
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        setLoadedUsers(responseData.users);
+      } catch (err) {
+        setError(err.message);
+      }
+
+      setIsLoading(false);
+    };
+
+    getUsers();
+  }, []);
+
+  const errorHandler = () => {
+    setError(null);
+  };
+
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={errorHandler} />
+      {isLoading && <LoadingSpinner />}
+      {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
+    </React.Fragment>
+  );
 };
 
 export default Users;
