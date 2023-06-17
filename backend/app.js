@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const placesRoutes = require("./routes/places");
 const userRoutes = require("./routes/users");
@@ -27,4 +28,11 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(5000);
+mongoose
+  .connect(
+    "mongodb+srv://CanTurkmen:CanTurkmen12@cluster0.t76i6e6.mongodb.net/SharePlace"
+  )
+  .then((result) => {
+    app.listen(5000);
+  })
+  .catch((err) => console.log(err));
