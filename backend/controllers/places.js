@@ -30,7 +30,7 @@ const createPlace = async (req, res, next) => {
     location: coordinates,
     address,
     image:
-      "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwherearethosemorgans.com%2Fhow-to-visit-the-empire-state-building%2F&psig=AOvVaw2PDy9SzlxfnNssyYVSneQ9&ust=1687087599602000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOD605qZyv8CFQAAAAAdAAAAABAI",
+      "https://s39023.pcdn.co/wp-content/uploads/2022/10/Where-Are-Those-Morgans-Empire-State-Building.jpg.optimal.jpg",
     creator,
   });
 

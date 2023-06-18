@@ -5,8 +5,12 @@ import Card from "../../shared/components/UIComponents/Card";
 import Modal from "../../shared/components/UIComponents/Modal";
 import "./PlaceItem.css";
 import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hooks";
+import ErrorModal from "../../shared/components/UIComponents/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIComponents/LoadingSpinner";
 
 const PlaceItem = (props) => {
+  const {isLoading, error, sendRequest, clearError} = useHttpClient();
   const authCtx = useContext(AuthContext);
   const [showMap, setShowMap] = useState(false);
 
@@ -18,8 +22,18 @@ const PlaceItem = (props) => {
     setShowMap(false);
   };
 
+  const confirmDeleteHandler = async () => {
+    try {
+      await sendRequest(`http://localhost:5000/api/places/${props.id}`, "DELETE");
+      props.onDelete(props.id);
+    } catch (err) {
+
+    }
+  };
+
   return (
     <React.Fragment>
+      <ErrorModal error={error} onClear={clearError}/>
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -34,6 +48,7 @@ const PlaceItem = (props) => {
       </Modal>
       <li className="place-item">
         <Card className="place-item__content">
+          {isLoading && <LoadingSpinner asOverlay/>}
           <div className="place-item__image">
             <img src={props.image} alt={props.title} />
           </div>
@@ -46,8 +61,8 @@ const PlaceItem = (props) => {
             <Button inverse onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
-            {authCtx.isLoggedIn && <Button to={`/places/${props.id}`}>EDIT</Button>}
-            {authCtx.isLoggedIn && <Button danger>DELETE</Button>}
+            {authCtx.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button>}
+            {authCtx.isLoggedIn && <Button danger onClick={confirmDeleteHandler}>DELETE</Button>}
           </div>
         </Card>
       </li>

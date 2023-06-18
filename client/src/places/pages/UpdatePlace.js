@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./PlaceForm.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../shared/components/FormElements/Button";
 import Input from "../../shared/components/FormElements/Input";
 import Card from "../../shared/components/UIComponents/Card";
@@ -9,38 +9,16 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
 import useForm from "../../shared/hooks/form-hooks";
-
-const DUMMY_PLACES = [
-  {
-    id: "p1",
-    title: "Empire State Building",
-    description: "One of the most famous skyscrapers in the world",
-    imageUrl:
-      "https://www.history.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTU3ODc3NjU2NzUxNTgwODk1/this-day-in-history-05011931---empire-state-building-dedicated.jpg",
-    address: "New York, 10001, Amerika Birleşik Devletleri",
-    location: {
-      lat: 40.7485452,
-      lng: -73.987503,
-    },
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "Emp. State Building",
-    description: "One of the most famous skyscrapers in the world",
-    imageUrl:
-      "https://www.history.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTU3ODc3NjU2NzUxNTgwODk1/this-day-in-history-05011931---empire-state-building-dedicated.jpg",
-    address: "New York, 10001, Amerika Birleşik Devletleri",
-    location: {
-      lat: 40.7485452,
-      lng: -73.987503,
-    },
-    creator: "u2",
-  },
-];
+import { useHttpClient } from "../../shared/hooks/http-hooks";
+import LoadingSpinner from "../../shared/components/UIComponents/LoadingSpinner";
+import ErrorModal from "../../shared/components/UIComponents/ErrorModal";
+import { AuthContext } from "../../shared/context/auth-context";
 
 const UpdatePlace = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loadedPlace, setLoadedPlace] = useState();
   const placeId = useParams().placeId;
 
   const [formState, inputHandler, setFormData] = useForm({
@@ -54,29 +32,58 @@ const UpdatePlace = () => {
     },
   });
 
-  const identifiedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
-
   useEffect(() => {
-    if(identifiedPlace) {
+    const fetchPlace = async () => {
+      const responseData = await sendRequest(
+        `http://localhost:5000/api/places/${placeId}`
+      );
+      setLoadedPlace(responseData.place);
       setFormData(
         {
           title: {
-            value: identifiedPlace.title,
+            value: responseData.place.title,
             isValid: true,
           },
           description: {
-            value: identifiedPlace.description,
+            value: responseData.place.description,
             isValid: true,
           },
         },
         true
       );
-    }
+    };
 
-    setIsLoading(false);
-  }, [setFormData, identifiedPlace]);
+    fetchPlace();
+  }, [sendRequest, placeId, setFormData]);
 
-  if (!identifiedPlace) {
+  const placeUpdateSubmitHandler = async (event) => {
+    event.preventDefault();
+
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/places/${placeId}`,
+        "PATCH",
+        JSON.stringify({
+          title: formState.inputs.title.value,
+          description: formState.inputs.description.value,
+        }),
+        {
+          "Content-Type": "application/json",
+        }
+      );
+      navigate(`/${authCtx.userId}/places`);
+    } catch (err) {}
+  };
+
+  if (isLoading) {
+    return (
+      <div className="center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!loadedPlace && !error) {
     return (
       <div className="center">
         <Card>
@@ -86,46 +93,38 @@ const UpdatePlace = () => {
     );
   }
 
-  const placeUpdateSubmitHandler = (event) => {
-    event.preventDefault();
-    console.log(formState.inputs);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="center">
-        <h2>Loading...</h2>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={placeUpdateSubmitHandler} className="place-form">
-      <Input
-        id="title"
-        element="input"
-        type="text"
-        label="Title"
-        validators={[VALIDATOR_REQUIRE()]}
-        errorText="Please enter a valid title"
-        onInput={inputHandler}
-        initialValue={formState.inputs.title.value}
-        initialValidity={formState.inputs.title.isValid}
-      />
-      <Input
-        id="description"
-        element="textarea"
-        label="Description"
-        validators={[VALIDATOR_MINLENGTH(5)]}
-        errorText="Please enter a valid description (at least 5 characters)."
-        onInput={inputHandler}
-        initialValue={formState.inputs.description.value}
-        initialValidity={formState.inputs.description.isValid}
-      />
-      <Button type="submit" disabled={!formState.isValid}>
-        UPDATE PLACE
-      </Button>
-    </form>
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {!isLoading && loadedPlace && (
+        <form onSubmit={placeUpdateSubmitHandler} className="place-form">
+          <Input
+            id="title"
+            element="input"
+            type="text"
+            label="Title"
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please enter a valid title"
+            onInput={inputHandler}
+            initialValue={loadedPlace.title}
+            initialValidity={true}
+          />
+          <Input
+            id="description"
+            element="textarea"
+            label="Description"
+            validators={[VALIDATOR_MINLENGTH(5)]}
+            errorText="Please enter a valid description (at least 5 characters)."
+            onInput={inputHandler}
+            initialValue={loadedPlace.description}
+            initialValidity={true}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            UPDATE PLACE
+          </Button>
+        </form>
+      )}
+    </React.Fragment>
   );
 };
 

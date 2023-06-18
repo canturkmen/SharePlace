@@ -78,7 +78,7 @@ const AuthPage = () => {
       } catch (err) {}
     } else {
       try {
-        await fetch(
+        const responseData = await sendRequest(
           "http://localhost:5000/api/users/signup",
           "POST",
           JSON.stringify({
@@ -90,7 +90,7 @@ const AuthPage = () => {
             "Content-Type": "application/json",
           }
         );
-        authCtx.login();
+        authCtx.login(responseData.user.id);
       } catch (err) {}
     }
   };
@@ -128,7 +128,7 @@ const AuthPage = () => {
             element="input"
             type="password"
             label="Password"
-            validators={[VALIDATOR_MINLENGTH(5)]}
+            validators={[VALIDATOR_MINLENGTH(6)]}
             errorText="Please enter a valid password (at least 5 characters)"
             onInput={inputHandler}
           />
