@@ -86,7 +86,12 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({ message: "Logged In." });
+  res
+    .status(200)
+    .json({
+      message: "Logged In.",
+      user: existingUser.toObject({ getters: true }),
+    });
 };
 
 exports.getUsers = getUsers;

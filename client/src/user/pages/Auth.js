@@ -63,7 +63,7 @@ const AuthPage = () => {
     event.preventDefault();
     if (isLoginMode) {
       try {
-        await sendRequest(
+        const responseData = await sendRequest(
           "http://localhost:5000/api/users/login",
           "POST",
           JSON.stringify({
@@ -74,7 +74,7 @@ const AuthPage = () => {
             "Content-Type": "application/json",
           }
         );
-        authCtx.login();
+        authCtx.login(responseData.user.id);
       } catch (err) {}
     } else {
       try {
