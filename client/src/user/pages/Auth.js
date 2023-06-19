@@ -122,7 +122,7 @@ const AuthPage = () => {
             />
           )}
           {!isLoginMode && (
-            <ImageUpload id="image" onInput={inputHandler} center />
+            <ImageUpload id="image" onInput={inputHandler} center errorText="Please provide an image."/>
           )}
           <Input
             id="email"
