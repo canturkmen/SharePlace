@@ -83,7 +83,7 @@ const AuthPage = () => {
             "Content-Type": "application/json",
           }
         );
-        authCtx.login(responseData.user.id);
+        authCtx.login(responseData.userId, responseData.token);
       } catch (err) {}
     } else {
       try {
@@ -97,7 +97,7 @@ const AuthPage = () => {
           "POST",
           formData
         );
-        authCtx.login(responseData.user.id);
+        authCtx.login(responseData.userId, responseData.token);
       } catch (err) {}
     }
   };
@@ -122,7 +122,12 @@ const AuthPage = () => {
             />
           )}
           {!isLoginMode && (
-            <ImageUpload id="image" onInput={inputHandler} center errorText="Please provide an image."/>
+            <ImageUpload
+              id="image"
+              onInput={inputHandler}
+              center
+              errorText="Please provide an image."
+            />
           )}
           <Input
             id="email"

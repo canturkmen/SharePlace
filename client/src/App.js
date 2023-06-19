@@ -1,5 +1,9 @@
 import React, { useCallback, useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import NewPlace from "./places/pages/NewPlace";
 import UpdatePlace from "./places/pages/UpdatePlace";
 import UserPlaces from "./places/pages/UserPlaces";
@@ -30,7 +34,7 @@ const unloggedRouter = createBrowserRouter([
 const loggedRouter = createBrowserRouter([
   {
     path: "/",
-    element: <MainNavigation/>,
+    element: <MainNavigation />,
     children: [
       { index: true, element: <Users /> },
       {
@@ -39,36 +43,45 @@ const loggedRouter = createBrowserRouter([
       },
       {
         path: "places",
-        children: [{path: ":placeId", element: <UpdatePlace/>}, {path: "new", element: <NewPlace />}]
-      }
-    ]
-  }
+        children: [
+          { path: ":placeId", element: <UpdatePlace /> },
+          { path: "new", element: <NewPlace /> },
+        ],
+      },
+    ],
+  },
 ]);
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(false);
   const [userId, setUserId] = useState(false);
 
-  const login = useCallback((uid) => {
-    setIsLoggedIn(true);
+  const login = useCallback((uid, token) => {
+    setToken(token);
     setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false);
+    setToken(null);
     setUserId(null);
   }, []);
 
   let element;
-  if(isLoggedIn) {
-    element = <RouterProvider router={loggedRouter} />
+  if (token) {
+    element = <RouterProvider router={loggedRouter} />;
   } else {
-    element = <RouterProvider router={unloggedRouter} />
+    element = <RouterProvider router={unloggedRouter} />;
   }
-  
+
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: isLoggedIn, userId: userId, login: login, logout: logout }}
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}
     >
       {element}
     </AuthContext.Provider>

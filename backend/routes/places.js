@@ -4,6 +4,13 @@ const router = express.Router();
 
 const placesController = require("../controllers/places");
 const fileUpload = require("../middleware/file-upload");
+const checkAuth = require("../middleware/check-auth");
+
+router.get("/:pid", placesController.getPlaceById);
+
+router.get("/user/:uid", placesController.getPlacesByUserId);
+
+router.use(checkAuth);
 
 router.post(
   "/",
@@ -16,8 +23,6 @@ router.post(
   placesController.createPlace
 );
 
-router.get("/:pid", placesController.getPlaceById);
-
 router.patch(
   "/:pid",
   [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
@@ -25,7 +30,5 @@ router.patch(
 );
 
 router.delete("/:pid", placesController.deletePlace);
-
-router.get("/user/:uid", placesController.getPlacesByUserId);
 
 module.exports = router;
