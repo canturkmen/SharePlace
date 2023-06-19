@@ -13,6 +13,7 @@ import { AuthContext } from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIComponents/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIComponents/LoadingSpinner";
 import { useHttpClient } from "../../shared/hooks/http-hooks";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 
 const AuthPage = () => {
   const authCtx = useContext(AuthContext);
@@ -39,6 +40,7 @@ const AuthPage = () => {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -48,6 +50,10 @@ const AuthPage = () => {
           ...formState.inputs,
           name: {
             value: "",
+            isValid: false,
+          },
+          image: {
+            value: null,
             isValid: false,
           },
         },
@@ -61,6 +67,9 @@ const AuthPage = () => {
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+
+    console.log(formState.inputs);
+
     if (isLoginMode) {
       try {
         const responseData = await sendRequest(
@@ -114,6 +123,9 @@ const AuthPage = () => {
               onInput={inputHandler}
             />
           )}
+          {!isLoginMode && (
+            <ImageUpload id="image" onInput={inputHandler} center />
+          )}
           <Input
             id="email"
             element="input"
@@ -129,7 +141,7 @@ const AuthPage = () => {
             type="password"
             label="Password"
             validators={[VALIDATOR_MINLENGTH(6)]}
-            errorText="Please enter a valid password (at least 5 characters)"
+            errorText="Please enter a valid password (at least 6 characters)"
             onInput={inputHandler}
           />
           <Button type="submit" disabled={!formState.isValid}>
