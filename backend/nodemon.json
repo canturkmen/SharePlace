@@ -1,0 +1,9 @@
+{
+  "env": {
+    "DB_USER": "CanTurkmen",
+    "DB_PASSWORD": "CanTurkmen12",
+    "DB_NAME": "SharePlace",
+    "GOOGLE_API_KEY": "AIzaSyA0M7nhGJLgIc9bYYGgE6ehdqz_-PzOHdY",
+    "JWT_KEY": "supersecret_dont_share"
+  }
+}
