@@ -3,7 +3,7 @@
     "DB_USER": "CanTurkmen",
     "DB_PASSWORD": "CanTurkmen12",
     "DB_NAME": "SharePlace",
-    "GOOGLE_API_KEY": "AIzaSyA0M7nhGJLgIc9bYYGgE6ehdqz_-PzOHdY",
+    "GOOGLE_API_KEY": "AIzaSyCELIsiPwqfC-T74IsX2mRiUxAzwKv7HZw",
     "JWT_KEY": "supersecret_dont_share"
   }
 }
